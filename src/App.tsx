@@ -1,5 +1,5 @@
 import React from 'react';
-import {InstantEvent, RangedEvent} from "./data/Event";
+import {InstantEvent, RangedEvent} from "./data/event";
 import RangedEventChart from "./components/RangedEventChart";
 import InstantEventChart from "./components/InstantEventChart";
 
@@ -14,23 +14,57 @@ const App: React.FC = () => {
     ],
   };
 
-  const rangedEvent: RangedEvent = {
-    id: 2,
-    name: 'Ranged Event',
-    records: [
-      { timestamp: 1, data: 10, end_event_id: 2, end_event_name: 'End Event', end_timestamp: 3, end_data: 15 },
-      { timestamp: 4, data: 20, end_event_id: 3, end_event_name: 'End Event 2', end_timestamp: 6, end_data: 25 },
-    ],
-  };
+    const rangedEvents: Array<RangedEvent> = [
+        {
+            id: 133,
+            name: "Ranged Event A",
+            records: [
+                {
+                    timestamp: 6982300,
+                    data: 0,
+                    end_event_id: 135,
+                    end_event_name: "Ranged Event A Stop",
+                    end_timestamp: 1006970700,
+                    end_data: 0
+                },
+                {
+                    timestamp: 1000000000,
+                    data: 10,
+                    end_event_id: 136,
+                    end_event_name: "Ranged Event A Stop 2",
+                    end_timestamp: 2000000000,
+                    end_data: 5
+                }
+            ]
+        },
+        {
+            id: 134,
+            name: "Ranged Event B",
+            records: [
+                {
+                    timestamp: 2000000000,
+                    data: 20,
+                    end_event_id: 137,
+                    end_event_name: "Ranged Event B Stop",
+                    end_timestamp: 3000000000,
+                    end_data: 15
+                }
+            ]
+        }
+    ];
 
-  return (
+    return (
       <div>
         <h1>{instantEvent.name}</h1>
         <InstantEventChart event={instantEvent} />
-        <h1>{rangedEvent.name}</h1>
-        <RangedEventChart event={rangedEvent} />
+        <h1>Ranged events</h1>
+          <div>
+              {rangedEvents.map(event => (
+                  <RangedEventChart event={event}/>
+              ))}
+          </div>
       </div>
-  );
+    );
 };
 
 export default App;

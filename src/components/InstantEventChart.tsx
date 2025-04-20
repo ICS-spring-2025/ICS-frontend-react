@@ -1,6 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import {InstantEvent} from "../data/Event";
+import {InstantEvent} from "../data/event";
 
 const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
     return (
