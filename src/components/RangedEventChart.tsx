@@ -1,12 +1,14 @@
 import React from 'react';
-import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Label} from 'recharts';
+import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Label, ReferenceLine} from 'recharts';
 import {RangedEvent} from "../data/event";
 
 const RangedEventChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
     const data = event.records.flatMap(record => [
         { timestamp: record.timestamp, data: record.data, name: event.name },
-        { timestamp: record.end_timestamp, data: record.end_data, name: record.end_event_name }
+        { timestamp: record.end_timestamp, data: record.data, name: event.name }
     ]);
+
+    data.sort((a, b) => a.timestamp - b.timestamp);
 
     return (
         <div>
@@ -20,7 +22,7 @@ const RangedEventChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                 </YAxis>
                 <Tooltip formatter={(value: any, name: any) => [`${value}`, `${name}`]} />
                 <CartesianGrid strokeDasharray="3 3" />
-                <Line type="monotone" dataKey="data" stroke="#82ca9d" />
+                <Line type="step" dataKey="data" stroke="#82ca9d" dot={false} />
             </LineChart>
         </div>
     );

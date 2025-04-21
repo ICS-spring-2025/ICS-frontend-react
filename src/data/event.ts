@@ -1,27 +1,27 @@
 export interface InstantEvent {
-    id: Number,
-    name: String,
+    id: number,
+    name: string,
     records: Array<InstantRecord>
 }
 
 export interface InstantRecord {
-    timestamp: Number,
-    data: Number
+    timestamp: number,
+    data: number
 }
 
 export interface RangedEvent {
-    id: Number,
-    name: String,
+    id: number,
+    name: string,
     records: Array<RangedRecord>
 }
 
 export interface RangedRecord {
-    timestamp: Number,
-    data: Number,
-    end_event_id: Number,
-    end_event_name: String,
-    end_timestamp: Number,
-    end_data: Number
+    timestamp: number,
+    data: number,
+    end_event_id: number,
+    end_event_name: string,
+    end_timestamp: number,
+    end_data: number
 }
 
 export interface EventsDTO {
