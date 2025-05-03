@@ -11,8 +11,6 @@ const RangedEventChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
     data.sort((a, b) => a.timestamp - b.timestamp);
 
     return (
-        <div>
-            <h2>{event.name}</h2>
             <LineChart width={600} height={300} data={data}>
                 <XAxis dataKey="timestamp">
                     <Label value="Timestamp" offset={0} position="insideBottom" />
@@ -24,7 +22,6 @@ const RangedEventChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <Line type="step" dataKey="data" stroke="#82ca9d" dot={false} />
             </LineChart>
-        </div>
     );
 };
 

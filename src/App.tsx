@@ -14,6 +14,7 @@ const App: React.FC = () => {
         const loadEvents = async () => {
             try {
                 const fetchedEvents = await fetchAllEvents();
+
                 setEvents(fetchedEvents);
             } catch (err) {
                 setError('Error fetching events');
