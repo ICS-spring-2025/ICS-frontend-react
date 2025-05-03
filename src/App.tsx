@@ -1,69 +1,62 @@
-import React from 'react';
-import {InstantEvent, RangedEvent} from "./data/event";
-import RangedEventChart from "./components/RangedEventChart";
-import InstantEventChart from "./components/InstantEventChart";
+import React, { useEffect, useState } from 'react';
+import { fetchAllEvents } from './api/event-api';
+import InstantEventChart from './components/InstantEventChart';
+import RangedEventChart from './components/RangedEventChart';
+import { EventsDTO, InstantEvent, RangedEvent } from './data/event';
+import './App.css';
 
 const App: React.FC = () => {
-  const instantEvent: InstantEvent = {
-    id: 1,
-    name: 'Instant Event',
-    records: [
-      { timestamp: 1, data: 10 },
-      { timestamp: 2, data: 20 },
-      { timestamp: 3, data: 15 },
-    ],
-  };
+    const [events, setEvents] = useState<EventsDTO | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const rangedEvents: Array<RangedEvent> = [
-        {
-            id: 133,
-            name: "Ranged Event A",
-            records: [
-                {
-                    timestamp: 6982300,
-                    data: 0,
-                    end_event_id: 135,
-                    end_event_name: "Ranged Event A Stop",
-                    end_timestamp: 1006970700,
-                    end_data: 0
-                },
-                {
-                    timestamp: 1000000000,
-                    data: 10,
-                    end_event_id: 136,
-                    end_event_name: "Ranged Event A Stop 2",
-                    end_timestamp: 2000000000,
-                    end_data: 5
-                }
-            ]
-        },
-        {
-            id: 134,
-            name: "Ranged Event B",
-            records: [
-                {
-                    timestamp: 2000000000,
-                    data: 20,
-                    end_event_id: 137,
-                    end_event_name: "Ranged Event B Stop",
-                    end_timestamp: 3000000000,
-                    end_data: 15
-                }
-            ]
-        }
-    ];
+    useEffect(() => {
+        const loadEvents = async () => {
+            try {
+                const fetchedEvents = await fetchAllEvents();
+                setEvents(fetchedEvents);
+            } catch (err) {
+                setError('Error fetching events');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadEvents();
+    }, []);
+
+    if (loading) {
+        return <div className="loading">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
 
     return (
-      <div>
-        <h1>{instantEvent.name}</h1>
-        <InstantEventChart event={instantEvent} />
-        <h1>Ranged events</h1>
-          <div>
-              {rangedEvents.map(event => (
-                  <RangedEventChart event={event}/>
-              ))}
-          </div>
-      </div>
+        <div className="container">
+            <h1 className="header">Logical Analyzer</h1>
+            {events?.instant.map((event: InstantEvent) => (
+                <div className="event" key={event.id}>
+                    <h2>{event.name}</h2>
+                    <div className="chart-container">
+                        <InstantEventChart event={event} />
+                    </div>
+                </div>
+            ))}
+            {events?.ranged.map((event: RangedEvent) => (
+                <div className="event" key={event.id}>
+                    <h2>{event.name}</h2>
+                    <div className="chart-container">
+                        <RangedEventChart event={event} />
+                    </div>
+                </div>
+            ))}
+            <div className="footer">
+                &copy; {new Date().getFullYear()} Logical Analyzer. All rights reserved.
+            </div>
+        </div>
     );
 };
 
