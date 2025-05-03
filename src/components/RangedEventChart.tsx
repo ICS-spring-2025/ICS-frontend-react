@@ -1,5 +1,5 @@
 import React from 'react';
-import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Label, ReferenceLine} from 'recharts';
+import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Label} from 'recharts';
 import {RangedEvent} from "../data/event";
 
 const RangedEventChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
