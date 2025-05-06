@@ -6,7 +6,8 @@ import {
     CartesianGrid,
     ResponsiveContainer,
     LineChart,
-    Line
+    Line,
+    ReferenceLine
 } from 'recharts';
 import { InstantEvent } from "../data/event";
 
@@ -57,7 +58,6 @@ const getColor = (data: string) => {
     return hsvToRgb(hue, saturation, value);
 };
 
-// Кастомный компонент для точек с цветом из данных
 const ColoredDot = (props: any) => {
     const { cx, cy, payload } = props;
     if (cx === undefined || cy === undefined) return null;
@@ -80,6 +80,22 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
         fill: getColor(String(record.data))
     }));
 
+    const timestamps = dataWithY.map(d => d.timestamp);
+    const minTimestamp = Math.min(...timestamps);
+    const maxTimestamp = Math.max(...timestamps);
+
+    const tickCount = 10;
+    const rawStep = (maxTimestamp - minTimestamp) / (tickCount - 1);
+    const step = Math.floor(rawStep) || 1;
+
+    const ticks: number[] = [];
+    for (let val = minTimestamp; val <= maxTimestamp; val += step) {
+        ticks.push(val);
+    }
+    if (ticks[ticks.length - 1] < maxTimestamp) {
+        ticks.push(maxTimestamp);
+    }
+
     return (
         <ResponsiveContainer width={600} height={100}>
             <LineChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }} data={dataWithY}>
@@ -87,8 +103,8 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
                 <XAxis
                     dataKey="timestamp"
                     type="number"
-                    domain={['auto', 'auto']}
-                    tickCount={10}
+                    domain={[minTimestamp, maxTimestamp]}
+                    ticks={ticks}
                     axisLine={true}
                     tickLine={true}
                     unit="ms"
@@ -98,10 +114,18 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
                 <Line
                     type="monotone"
                     dataKey="y"
-                    stroke="none" // линия не рисуется
-                    dot={<ColoredDot />} // кастомные точки с цветом
+                    stroke="none"
+                    dot={<ColoredDot />}
                     isAnimationActive={false}
                 />
+                {ticks.map((tickValue, idx) => (
+                    <ReferenceLine
+                        key={`ref-line-${idx}`}
+                        x={tickValue}
+                        stroke="#007acc"
+                        strokeWidth={2}
+                    />
+                ))}
             </LineChart>
         </ResponsiveContainer>
     );
