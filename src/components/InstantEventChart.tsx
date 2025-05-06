@@ -31,31 +31,16 @@ const CustomTooltip = ({ active, payload }: any) => {
     return null;
 };
 
-const hsvToRgb = (h: number, s: number, v: number) => {
-    let r, g, b;
-    const i = Math.floor(h * 6);
-    const f = h * 6 - i;
-    const p = v * (1 - s);
-    const q = v * (1 - f * s);
-    const t = v * (1 - (1 - f) * s);
-    const mod = i % 6;
+const getColor = (data: number) => {
+    // const hash = data * 100;
+    // const hue = (data % hash) / 360;
+    // const saturation = 0.7;
+    // const value = 0.9;
+    const r = (data * 1000 - 741) % 256;
+    const g = (data * 541 - 54) % 256;
+    const b = (data * 317 - 43) % 256;
 
-    if (mod === 0) [r, g, b] = [v, t, p];
-    else if (mod === 1) [r, g, b] = [q, v, p];
-    else if (mod === 2) [r, g, b] = [p, v, t];
-    else if (mod === 3) [r, g, b] = [p, q, v];
-    else if (mod === 4) [r, g, b] = [t, p, v];
-    else [r, g, b] = [v, p, q];
-
-    return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
-};
-
-const getColor = (data: string) => {
-    const hash = Array.from(data).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const hue = (hash % 360) / 360;
-    const saturation = 0.7;
-    const value = 0.9;
-    return hsvToRgb(hue, saturation, value);
+    return `rgb(${r}, ${g}, ${b})`;
 };
 
 const ColoredDot = (props: any) => {
@@ -77,7 +62,7 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
         timestamp: record.timestamp,
         data: record.data,
         y: 0,
-        fill: getColor(String(record.data))
+        fill: getColor(record.data)
     }));
 
     const timestamps = dataWithY.map(d => d.timestamp);
