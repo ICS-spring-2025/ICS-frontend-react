@@ -28,7 +28,6 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
 
     event.records.forEach((record, index) => {
         if (index === 0) {
-            // Вспомогательная точка с value=0 на startTimestamp первого рекорда
             data.push({
                 timestamp: record.timestamp,
                 value: 0,
@@ -52,7 +51,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
             isStart: false,
         });
         data.push({
-            timestamp: record.end_timestamp,
+            timestamp: record.end_timestamp + 1, // сдвигаем точку с value=0, чтобы не накладывалась
             value: 0,
             isServicePoint: false,
         });
