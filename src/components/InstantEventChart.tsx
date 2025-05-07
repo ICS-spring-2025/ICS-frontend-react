@@ -30,7 +30,7 @@ const CustomTooltip = ({ active, payload }: any) => {
                 fontFamily: 'Arial, sans-serif',
                 fontSize: '14px'
             }}>
-                <div><strong>Timestamp:</strong> {timestamp} ms</div>
+                <div><strong>Timestamp:</strong> {timestamp} ns</div>
                 <div><strong>Data:</strong> {data}</div>
             </div>
         );

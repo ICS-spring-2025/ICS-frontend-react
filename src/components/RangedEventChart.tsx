@@ -87,7 +87,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                         pointerEvents: 'auto'
                     }}
                 >
-                    <div><strong>{point.isStart ? 'Start Timestamp:' : 'End Timestamp:'}</strong> {point.timestamp}</div>
+                    <div><strong>{point.isStart ? 'Start Timestamp:' : 'End Timestamp:'}</strong> {point.timestamp} ns</div>
                     <div><strong>Active:</strong> {point.value}</div>
                     {point.value === 1 && point.data !== undefined && (
                         <div style={{ wordBreak: 'break-all' }}>
@@ -111,7 +111,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                                         <div><strong>Event ID:</strong> {event.event_id}</div>
                                         <div><strong>Name:</strong> {event.name}</div>
                                         <div style={{ wordBreak: 'break-all' }}><strong>Data:</strong> {event.data}</div>
-                                        <div><strong>Timestamp:</strong> {event.timestamp} ms</div>
+                                        <div><strong>Timestamp:</strong> {event.timestamp} ns</div>
                                     </li>
                                 ))}
                             </ul>
