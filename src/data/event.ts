@@ -22,6 +22,14 @@ export interface RangedRecord {
     end_event_name: string,
     end_timestamp: number,
     end_data: number
+    related_events: Array<RelatedInstantEvent>
+}
+
+export interface RelatedInstantEvent {
+    event_id: number,
+    data: number,
+    timestamp: number,
+    name: string,
 }
 
 export interface EventsDTO {

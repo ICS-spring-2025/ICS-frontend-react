@@ -16,12 +16,13 @@ const CustomTooltip = ({ active, payload }: any) => {
         const { timestamp, data } = payload[0].payload;
         return (
             <div style={{
-                backgroundColor: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.7)', // Прозрачный белый фон
                 border: '1px solid #ccc',
-                padding: '8px',
-                borderRadius: '4px',
-                fontSize: '14px',
-                color: '#333'
+                padding: 10,
+                borderRadius: '5px', // Закругленные углы
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)', // Тень для эффекта глубины
+                fontFamily: 'Arial, sans-serif', // Шрифт
+                fontSize: '14px' // Размер шрифта
             }}>
                 <div><strong>Timestamp:</strong> {timestamp} ms</div>
                 <div><strong>Data:</strong> {data}</div>
@@ -44,7 +45,7 @@ const getColor = (data: number) => {
 };
 
 const ColoredDot = (props: any) => {
-    const { cx, cy, payload } = props;
+    const {cx, cy, payload} = props;
     if (cx === undefined || cy === undefined) return null;
     return (
         <circle
@@ -107,7 +108,6 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
                     <ReferenceLine
                         key={`ref-line-${idx}`}
                         x={tickValue}
-                        stroke="#007acc"
                         strokeWidth={2}
                     />
                 ))}

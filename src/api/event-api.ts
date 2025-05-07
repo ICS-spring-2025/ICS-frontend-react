@@ -64,7 +64,8 @@ function mapEvents(events: ResponseDTO): EventsDTO {
                 end_event_id: record[2],
                 end_event_name: record[3],
                 end_timestamp: record[4],
-                end_data: record[5]
+                end_data: record[5],
+                related_events: record[6]
             }
             ));
 
