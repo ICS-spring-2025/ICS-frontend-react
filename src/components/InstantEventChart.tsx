@@ -33,10 +33,6 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 const getColor = (data: number) => {
-    // const hash = data * 100;
-    // const hue = (data % hash) / 360;
-    // const saturation = 0.7;
-    // const value = 0.9;
     const r = (data * 1000 - 741) % 256;
     const g = (data * 541 - 54) % 256;
     const b = (data * 317 - 43) % 256;
@@ -93,7 +89,7 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
                     ticks={ticks}
                     axisLine={true}
                     tickLine={true}
-                    unit="ms"
+                    unit="ns"
                 />
                 <YAxis hide domain={[0, 0]} />
                 <Tooltip content={<CustomTooltip />} />

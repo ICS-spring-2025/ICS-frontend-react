@@ -32,7 +32,7 @@ const Filter: React.FC<FilterProps> = ({ onApply, onReset }) => {
             />
             <input
                 type="number"
-                placeholder="startTimestamp (ms)"
+                placeholder="startTimestamp (ns)"
                 value={startTimestamp}
                 onChange={e => setStartTimestamp(e.target.value)}
                 step={10000}
@@ -40,7 +40,7 @@ const Filter: React.FC<FilterProps> = ({ onApply, onReset }) => {
             />
             <input
                 type="number"
-                placeholder="endTimestamp (ms)"
+                placeholder="endTimestamp (ns)"
                 value={endTimestamp}
                 onChange={e => setEndTimestamp(e.target.value)}
                 step={10000}

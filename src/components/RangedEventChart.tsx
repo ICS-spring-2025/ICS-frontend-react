@@ -6,7 +6,7 @@ interface DataPoint {
     timestamp: number;
     value: 0 | 1;
     data?: any;
-    relatedEvents?: Array<RelatedInstantEvent>
+    relatedEvents?: Array<RelatedInstantEvent>;
     isServicePoint?: boolean;
 }
 
@@ -15,43 +15,46 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
         return <div>No records to display</div>;
     }
 
-    const timePointsSet = new Set<number>();
-    event.records.forEach(record => {
-        timePointsSet.add(record.timestamp);
-        timePointsSet.add(record.end_timestamp);
-    });
-
-    let timePoints = Array.from(timePointsSet).sort((a, b) => a - b);
-
-    const minTimestamp = timePoints[0];
-    const maxTimestamp = timePoints[timePoints.length - 1];
+    const timestamps = event.records.flatMap(record => [record.timestamp, record.end_timestamp]);
+    const minTimestamp = Math.min(...timestamps);
+    const maxTimestamp = Math.max(...timestamps);
     const padding = (maxTimestamp - minTimestamp) * 0.1 || 1;
-
     const leftPoint = minTimestamp - padding > 0 ? minTimestamp - padding : 0;
     const rightPoint = maxTimestamp + padding;
 
-    timePoints = [leftPoint, ...timePoints, rightPoint];
+    let data: DataPoint[] = [];
+    data.push({ timestamp: leftPoint, value: 0, isServicePoint: true });
 
-    const data: DataPoint[] = timePoints.map(timestamp => {
-        const record = event.records.find(record => timestamp >= record.timestamp && timestamp <= record.end_timestamp);
-        if (record) {
-            return {
-                timestamp,
-                value: 1,
-                data: record.data,
-                relatedEvents: record.related_events,
-                isServicePoint: false,
-            };
-        } else {
-            return {
-                timestamp,
-                value: 0,
-                isServicePoint: (timestamp === leftPoint || timestamp === rightPoint),
-            };
-        }
+    event.records.forEach(record => {
+        data.push({
+            timestamp: record.timestamp,
+            value: 1,
+            data: record.data,
+            relatedEvents: record.related_events,
+            isServicePoint: false,
+        });
+        data.push({
+            timestamp: record.end_timestamp,
+            value: 1,
+            data: record.data,
+            relatedEvents: record.related_events,
+            isServicePoint: false,
+        });
+        data.push({
+            timestamp: record.end_timestamp + 1,
+            value: 0,
+            isServicePoint: false,
+        });
     });
 
-    // Кастомный тултип с прокруткой
+    data.push({ timestamp: rightPoint, value: 0, isServicePoint: true });
+
+    data.sort((a, b) => a.timestamp - b.timestamp);
+
+    data = data.filter((point, index, arr) => {
+        return index === arr.findIndex(p => p.timestamp === point.timestamp);
+    });
+
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const point: DataPoint = payload[0].payload;
@@ -114,7 +117,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                 type="number"
                 domain={['dataMin', 'dataMax']}
                 tickCount={10}
-                unit={"ms"}
+                unit={"ns"}
             >
                 <Label value="Timestamp" offset={0} position="insideBottom" />
             </XAxis>
