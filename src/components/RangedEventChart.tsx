@@ -1,6 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Label } from 'recharts';
-import {RangedEvent, RelatedInstantEvent} from "../data/event";
+import { RangedEvent, RelatedInstantEvent } from "../data/event";
 
 interface DataPoint {
     timestamp: number;
@@ -51,34 +51,50 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
         }
     });
 
+    // Кастомный тултип с прокруткой
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const point: DataPoint = payload[0].payload;
             return (
-                <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid #ccc',
-                    padding: 10,
-                    borderRadius: '5px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                    fontFamily: 'Arial, sans-serif',
-                    fontSize: '14px'
-                }}>
+                <div
+                    style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid #ccc',
+                        padding: 10,
+                        borderRadius: '5px',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        maxWidth: 350,
+                        maxHeight: 250,
+                        overflowY: 'auto',
+                        pointerEvents: 'auto'
+                    }}
+                >
                     <div><strong>Timestamp:</strong> {point.timestamp}</div>
                     <div><strong>Active:</strong> {point.value}</div>
                     {point.value === 1 && point.data !== undefined && (
-                        <div><strong>Data:</strong> {JSON.stringify(point.data)}</div>
+                        <div style={{ wordBreak: 'break-all' }}>
+                            <strong>Data:</strong> {JSON.stringify(point.data)}
+                        </div>
                     )}
                     {point.relatedEvents && point.relatedEvents.length > 0 && (
                         <div>
                             <strong>Related Events:</strong>
-                            <ul style={{padding: 0}}>
+                            <ul
+                                style={{
+                                    maxHeight: 100,
+                                    overflowY: 'auto',
+                                    padding: '0 10px',
+                                    margin: '5px 0',
+                                    listStyle: 'none'
+                                }}
+                            >
                                 {point.relatedEvents.map(event => (
-                                    <li key={event.event_id}
-                                        style={{marginBottom: '10px'}}>
+                                    <li key={event.event_id} style={{ marginBottom: '10px', borderBottom: '1px solid #eee', paddingBottom: 5 }}>
                                         <div><strong>Event ID:</strong> {event.event_id}</div>
                                         <div><strong>Name:</strong> {event.name}</div>
-                                        <div><strong>Data:</strong> {event.data}</div>
+                                        <div style={{ wordBreak: 'break-all' }}><strong>Data:</strong> {event.data}</div>
                                         <div><strong>Timestamp:</strong> {event.timestamp}</div>
                                     </li>
                                 ))}
@@ -91,16 +107,15 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
         return null;
     };
 
-
     return (
-        <LineChart width={700} height={300} data={data} margin={{top: 20, right: 30, left: 20, bottom: 20}}>
+        <LineChart width={700} height={300} data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <XAxis
                 dataKey="timestamp"
                 type="number"
                 domain={['dataMin', 'dataMax']}
                 tickCount={10}
             >
-                <Label value="Timestamp" offset={0} position="insideBottom"/>
+                <Label value="Timestamp" offset={0} position="insideBottom" />
             </XAxis>
             <YAxis
                 type="number"
@@ -113,7 +128,10 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
             >
                 <Label value="Active (0 or 1)" angle={-90} position="insideLeft" />
             </YAxis>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+                content={<CustomTooltip />}
+                wrapperStyle={{ pointerEvents: 'auto' }}
+            />
             <CartesianGrid strokeDasharray="3 3" />
             <Line
                 type="step"
