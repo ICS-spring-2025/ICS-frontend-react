@@ -22,32 +22,34 @@ const Filter: React.FC<FilterProps> = ({ onApply, onReset }) => {
     };
 
     return (
-        <div className="filter-container" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div className="filter-container">
             <input
                 type="text"
                 placeholder="Фильтр по data"
                 value={dataValue}
                 onChange={e => setDataValue(e.target.value)}
-                style={{ padding: '6px 8px', fontSize: 14, minWidth: 150 }}
+                className="filter-input"
             />
             <input
                 type="number"
                 placeholder="startTimestamp (ms)"
                 value={startTimestamp}
                 onChange={e => setStartTimestamp(e.target.value)}
-                style={{ padding: '6px 8px', fontSize: 14, minWidth: 150 }}
+                step={10000}
+                className="filter-input"
             />
             <input
                 type="number"
                 placeholder="endTimestamp (ms)"
                 value={endTimestamp}
                 onChange={e => setEndTimestamp(e.target.value)}
-                style={{ padding: '6px 8px', fontSize: 14, minWidth: 150 }}
+                step={10000}
+                className="filter-input"
             />
-            <button onClick={handleApply} style={{ padding: '6px 12px', fontSize: 14, cursor: 'pointer' }}>
+            <button onClick={handleApply} className="filter-button">
                 Применить
             </button>
-            <button onClick={handleReset} style={{ padding: '6px 12px', fontSize: 14, cursor: 'pointer' }}>
+            <button onClick={handleReset} className="filter-button reset">
                 Сбросить
             </button>
         </div>

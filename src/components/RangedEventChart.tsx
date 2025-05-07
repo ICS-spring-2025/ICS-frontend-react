@@ -95,7 +95,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                                         <div><strong>Event ID:</strong> {event.event_id}</div>
                                         <div><strong>Name:</strong> {event.name}</div>
                                         <div style={{ wordBreak: 'break-all' }}><strong>Data:</strong> {event.data}</div>
-                                        <div><strong>Timestamp:</strong> {event.timestamp}</div>
+                                        <div><strong>Timestamp:</strong> {event.timestamp} ms</div>
                                     </li>
                                 ))}
                             </ul>
@@ -114,6 +114,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                 type="number"
                 domain={['dataMin', 'dataMax']}
                 tickCount={10}
+                unit={"ms"}
             >
                 <Label value="Timestamp" offset={0} position="insideBottom" />
             </XAxis>
