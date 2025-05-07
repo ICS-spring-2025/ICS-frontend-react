@@ -62,6 +62,17 @@ const App: React.FC = () => {
         });
     };
 
+    const maxTimestampInstant = filteredEvents?.instant.reduce((max, event) => {
+        const localMax = event.records.reduce((lm, r) => Math.max(lm, r.timestamp), 0);
+        return Math.max(max, localMax);
+    }, 0) || 0;
+
+    const minTimestampInstant = filteredEvents?.instant.reduce((min, event) => {
+        const localMin = event.records.reduce((lm, r) => Math.min(lm, r.timestamp), Number.MAX_SAFE_INTEGER);
+        return Math.min(min, localMin);
+    }, Number.MAX_SAFE_INTEGER) || 0;
+
+
     const handleResetFilter = () => {
         loadEvents();
     };
@@ -84,7 +95,11 @@ const App: React.FC = () => {
                 <div className="event" key={event.id}>
                     <h2>{event.name}</h2>
                     <div className="chart-container">
-                        <InstantEventChart event={event} />
+                        <InstantEventChart
+                            event={event}
+                            maxTimestamp={maxTimestampInstant}
+                            minTimestamp={minTimestampInstant}
+                        />
                     </div>
                 </div>
             ))}

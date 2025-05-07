@@ -11,18 +11,24 @@ import {
 } from 'recharts';
 import { InstantEvent } from "../data/event";
 
+interface InstantEventChartProps {
+    event: InstantEvent;
+    maxTimestamp: number;
+    minTimestamp: number;
+}
+
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
         const { timestamp, data } = payload[0].payload;
         return (
             <div style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.7)', // Прозрачный белый фон
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
                 border: '1px solid #ccc',
                 padding: 10,
-                borderRadius: '5px', // Закругленные углы
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)', // Тень для эффекта глубины
-                fontFamily: 'Arial, sans-serif', // Шрифт
-                fontSize: '14px' // Размер шрифта
+                borderRadius: '5px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '14px'
             }}>
                 <div><strong>Timestamp:</strong> {timestamp} ms</div>
                 <div><strong>Data:</strong> {data}</div>
@@ -54,24 +60,19 @@ const ColoredDot = (props: any) => {
     );
 };
 
-const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
+const InstantEventChart: React.FC<InstantEventChartProps> = ({ event, maxTimestamp, minTimestamp }) => {
     const dataWithY = event.records.map(record => ({
-        timestamp: record.timestamp,
+        timestamp: record.timestamp - minTimestamp,
         data: record.data,
         y: 0,
         fill: getColor(record.data)
     }));
 
-    const timestamps = dataWithY.map(d => d.timestamp);
-    const minTimestamp = Math.min(...timestamps);
-    const maxTimestamp = Math.max(...timestamps);
-
     const tickCount = 10;
-    const rawStep = (maxTimestamp - minTimestamp) / (tickCount - 1);
-    const step = Math.floor(rawStep) || 1;
+    const step = Math.floor(maxTimestamp / (tickCount - 1)) || 1;
 
     const ticks: number[] = [];
-    for (let val = minTimestamp; val <= maxTimestamp; val += step) {
+    for (let val = 0; val <= maxTimestamp; val += step) {
         ticks.push(val);
     }
     if (ticks[ticks.length - 1] < maxTimestamp) {
@@ -85,7 +86,7 @@ const InstantEventChart: React.FC<{ event: InstantEvent }> = ({ event }) => {
                 <XAxis
                     dataKey="timestamp"
                     type="number"
-                    domain={[minTimestamp, maxTimestamp]}
+                    domain={[0, maxTimestamp]}
                     ticks={ticks}
                     axisLine={true}
                     tickLine={true}
