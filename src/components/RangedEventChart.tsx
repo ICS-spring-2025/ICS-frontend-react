@@ -8,6 +8,7 @@ interface DataPoint {
     data?: any;
     relatedEvents?: Array<RelatedInstantEvent>;
     isServicePoint?: boolean;
+    isStart?: boolean;
 }
 
 const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
@@ -25,13 +26,22 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
     let data: DataPoint[] = [];
     data.push({ timestamp: leftPoint, value: 0, isServicePoint: true });
 
-    event.records.forEach(record => {
+    event.records.forEach((record, index) => {
+        if (index === 0) {
+            // Вспомогательная точка с value=0 на startTimestamp первого рекорда
+            data.push({
+                timestamp: record.timestamp,
+                value: 0,
+                isServicePoint: false,
+            });
+        }
         data.push({
             timestamp: record.timestamp,
             value: 1,
             data: record.data,
             relatedEvents: record.related_events,
             isServicePoint: false,
+            isStart: true,
         });
         data.push({
             timestamp: record.end_timestamp,
@@ -39,9 +49,10 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
             data: record.data,
             relatedEvents: record.related_events,
             isServicePoint: false,
+            isStart: false,
         });
         data.push({
-            timestamp: record.end_timestamp + 1,
+            timestamp: record.end_timestamp,
             value: 0,
             isServicePoint: false,
         });
@@ -49,15 +60,18 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
 
     data.push({ timestamp: rightPoint, value: 0, isServicePoint: true });
 
-    data.sort((a, b) => a.timestamp - b.timestamp);
+    data.sort((a, b) => a.timestamp - b.timestamp || a.value - b.value);
 
     data = data.filter((point, index, arr) => {
-        return index === arr.findIndex(p => p.timestamp === point.timestamp);
+        return index === arr.findIndex(p => p.timestamp === point.timestamp && p.value === point.value && p.isStart === point.isStart);
     });
 
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const point: DataPoint = payload[0].payload;
+            if (point.value === 0) {
+                return null;
+            }
             return (
                 <div
                     style={{
@@ -74,7 +88,7 @@ const RangedEventStepChart: React.FC<{ event: RangedEvent }> = ({ event }) => {
                         pointerEvents: 'auto'
                     }}
                 >
-                    <div><strong>Timestamp:</strong> {point.timestamp}</div>
+                    <div><strong>{point.isStart ? 'Start Timestamp:' : 'End Timestamp:'}</strong> {point.timestamp}</div>
                     <div><strong>Active:</strong> {point.value}</div>
                     {point.value === 1 && point.data !== undefined && (
                         <div style={{ wordBreak: 'break-all' }}>
